@@ -2,5 +2,9 @@
     {
         "slug" : "hello-world",
         "file" : "hello-world.md"
+    },
+    {
+        "slug" : "history",
+        "file" : "history.md"
     }
 ]

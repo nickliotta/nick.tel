@@ -75,7 +75,6 @@ export default function BlogPost() {
 }
 
 const Article = styled.article`
-    color: #fff;
     line-height: 1.5;
     
     h1 {
@@ -89,6 +88,7 @@ const Article = styled.article`
     }
 
     p {
+        color: hsl(var(--primary-200));
         margin-bottom: 1rem;
     }
 
@@ -100,7 +100,16 @@ const Article = styled.article`
             text-decoration: none !important;
         }
     }
-        
+    
+    li {
+        margin: 0.5rem 0;
+        padding-left: 0.5rem;
+    }
+
+    li::marker {
+        color: #d8d8d8ff;
+    }
+
     img {
         max-width: 100%;
         height: auto;
