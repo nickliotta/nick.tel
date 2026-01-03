@@ -1,4 +1,4 @@
-# Interesting historical information
+# Interesting History
 Posted on January 2, 2026
 
 I often encounter historical topics on social media that I don’t know much about, which prompts me to do further research and understand the perspectives involved. Here’s a curated list of subjects I found interesting enough to explore further.
