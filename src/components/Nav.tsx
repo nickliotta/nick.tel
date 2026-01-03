@@ -11,7 +11,7 @@ const pathnameOffsets: { [key: string]: number } = {
 	"/"             : 0,
 	"/where"        : 39,
 	"/publications" : 78,
-    "/posts"        : 117
+  "/posts"        : 117
 };
 
 const Nav = () => {

@@ -3,6 +3,7 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
+import { Helmet } from "react-helmet";
 import PageWrapper from "../pages/PageWrapper";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
@@ -11,6 +12,13 @@ export default function BlogPost() {
     const { slug } = useParams<{ slug: string }>();
     const [content, setContent] = useState<string | null>(null);
     const [notFound, setNotFound] = useState(false);
+
+    const getTitle = (md: string) => {
+        const lines = md.split("\n");
+        const h1 = lines.find((line) => line.startsWith("# "));
+        if (h1) return h1.replace(/^# /, "").trim();
+        return "Post"; 
+    };
 
     useEffect(() => {
         if (!slug) return;
@@ -26,9 +34,15 @@ export default function BlogPost() {
 
     if (notFound) return <Redirect to="/posts" />;
     if (!content) return <p>...</p>;
+    
+    const title = getTitle(content);
 
     return (
         <PageWrapper>
+            <Helmet>
+                <title>{title}</title>
+            </Helmet>
+
             <Article>
                 <ReactMarkdown
                     remarkPlugins={[remarkGfm]}
