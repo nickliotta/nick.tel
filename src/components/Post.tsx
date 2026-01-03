@@ -7,6 +7,62 @@ import { Helmet } from "react-helmet";
 import PageWrapper from "../pages/PageWrapper";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { visit } from "unist-util-visit";
+import Tooltip, { tooltipClasses, TooltipProps } from "@mui/material/Tooltip";
+
+const NotesTooltip = styled(({ className, ...props }: TooltipProps) => (
+	<Tooltip {...props} classes={{ popper: className }} />
+))(({ theme }) => ({
+	[`& .${tooltipClasses.tooltip}`]: {
+		backgroundColor: "#1f1f1f",
+		color: "#fff",
+		minWidth: 50,
+		maxWidth: "none",
+		width: "auto",
+		fontFamily: "inherit",
+		fontSize: "0.98rem",
+		padding: "5px 20px",
+		borderRadius: "8px",
+		whiteSpace: "normal",
+		lineHeight: 1.25,
+		boxShadow: "0px 3px 10px rgba(0,0,0,0.3)",
+		textAlign: "center",
+	},
+	[`& .${tooltipClasses.arrow}`]: {
+		color: "#1f1f1f",
+	},
+}));
+
+export function remarkTooltip() {
+  return (tree: any) => {
+    visit(tree, "text", (node, index, parent) => {
+      const regex = /\[\[([^\|\]]+)\|([^\]]+)\]\]/g;
+      const parts: any[] = [];
+      let lastIndex = 0;
+
+      node.value.replace(regex, (match: string, text: string, title: string, offset: number) => {
+        if (offset > lastIndex) {
+          parts.push({ type: "text", value: node.value.slice(lastIndex, offset) });
+        }
+        parts.push({
+          type: "element",
+          data: { hName: "tooltip", hProperties: { title } },
+          children: [{ type: "text", value: text }],
+        });
+        lastIndex = offset + match.length;
+        return match;
+      });
+
+      if (lastIndex < node.value.length) {
+        parts.push({ type: "text", value: node.value.slice(lastIndex) });
+      }
+
+      if (parts.length > 0 && parent) {
+        parent.children.splice(index, 1, ...parts);
+      }
+    });
+  };
+}
 
 export default function BlogPost() {
     const { slug } = useParams<{ slug: string }>();
@@ -45,7 +101,7 @@ export default function BlogPost() {
 
             <Article>
                 <ReactMarkdown
-                    remarkPlugins={[remarkGfm]}
+                    remarkPlugins={[remarkGfm, remarkTooltip]}
                     components={{
                         code({ inline, className, children, ...props }) {
                             const match = /language-(\w+)/.exec(className || "");
@@ -72,6 +128,15 @@ export default function BlogPost() {
                                 </code>
                             );
                         },
+                        tooltip({ node, children }) {
+                            const title = node.properties?.title;
+
+                            return (
+                            <NotesTooltip title={title} arrow placement="top">
+                                {children}
+                            </NotesTooltip>
+                            );
+                        },          
                         a({ href, children, ...props }) {
                             return (
                                 <a href={href} target="_blank" rel="noopener noreferrer" {...props}>
