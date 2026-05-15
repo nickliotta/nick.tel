@@ -1,5 +1,5 @@
 import { useState } from "react";
-import styled from "styled-components";
+import styled, { createGlobalStyle } from "styled-components";
 
 const Publication = ({
 	title,
@@ -22,72 +22,96 @@ const Publication = ({
 	const me = ["Nicholas F. Liotta", "Nicholas Liotta"];
 
 	return (
-		<Container>
-			<Title>{title}</Title>
+		<>
+			<PublicationLayoutFix />
+			<Container>
+				<Title>{title}</Title>
 
-			<Authors>
-				{authors.split(", ").map((author, i, arr) => {
-					const isMe = me.some((me) => author.includes(me));
-					const isLast = i === arr.length - 1;
+				<Authors>
+					{authors.split(", ").map((author, i, arr) => {
+						const isMe = me.some((me) => author.includes(me));
+						const isLast = i === arr.length - 1;
 
-					if (isMe) {
+						if (isMe) {
+							return (
+								<span key={i}>
+									<span style={{ color: "lightpink", fontWeight: "bold" }}>
+										{author}
+									</span>
+									{!isLast && ", "}
+								</span>
+							);
+						}
+
 						return (
 							<span key={i}>
-								<span style={{ color: "lightpink", fontWeight: "bold" }}>
-									{author}
-								</span>
+								{author}
 								{!isLast && ", "}
 							</span>
 						);
-					}
+					})}
+				</Authors>
 
-					return (
-						<span key={i}>
-							{author}
-							{!isLast && ", "}
+				<Journal>
+					<i>{journal}</i> ({year}){" "}
+					{doi && (
+						<span>
+							DOI:{" "}
+							<a
+								href={`https://doi.org/${doi}`}
+								target="_blank"
+								rel="noopener noreferrer"
+							>
+								{doi}
+							</a>
 						</span>
-					);
-				})}
-			</Authors>
+					)}
+				</Journal>
 
-			<Journal>
-				<i>{journal}</i> ({year}){" "}
-				{doi && (
-					<span>
-						DOI:{" "}
-						<a
-							href={`https://doi.org/${doi}`}
+				<LinksRow>
+					{abstract && (
+						<ClickableText onClick={() => setShowAbstract(!showAbstract)}>
+							[Abstract]
+						</ClickableText>
+					)}
+					{code && (
+						<ClickableLink
+							href={code}
 							target="_blank"
 							rel="noopener noreferrer"
+							color="lightblue"
 						>
-							{doi}
-						</a>
-					</span>
-				)}
-			</Journal>
+							[Code]
+						</ClickableLink>
+					)}
+				</LinksRow>
 
-			<LinksRow>
 				{abstract && (
-					<ClickableText onClick={() => setShowAbstract(!showAbstract)}>
-						[Abstract]
-					</ClickableText>
+					<AbstractShell $show={showAbstract}>
+						<AbstractBox $show={showAbstract}>{abstract}</AbstractBox>
+					</AbstractShell>
 				)}
-				{code && (
-					<ClickableLink
-						href={code}
-						target="_blank"
-						rel="noopener noreferrer"
-						color="lightblue"
-					>
-						[Code]
-					</ClickableLink>
-				)}
-			</LinksRow>
-
-			{<AbstractBox show={showAbstract}>{abstract}</AbstractBox>}
-		</Container>
+			</Container>
+		</>
 	);
 };
+
+/*
+	Fixes the shifting bug without adding the extra spacing from the earlier version.
+	- scrollbar-gutter prevents page-width jumps
+	- overflow-anchor prevents Chrome from moving the viewport while the abstract opens
+*/
+const PublicationLayoutFix = createGlobalStyle`
+	html {
+		overflow-y: scroll;
+		scrollbar-gutter: stable;
+	}
+
+	body,
+	#root {
+		overflow-anchor: none;
+	}
+`;
 
 const Container = styled.div`
 	display: flex;
@@ -100,7 +124,9 @@ const Container = styled.div`
 	width: 100%;
 	box-sizing: border-box;
 	font-family: "Space Mono", monospace;
-    font-size: 0.95em;
+	font-size: 0.95em;
+	overflow-anchor: none;
+	contain: layout paint;
 `;
 
 const Title = styled.h3`
@@ -171,20 +197,34 @@ const ClickableLink = styled.a<{ color?: string }>`
 	}
 `;
 
-const AbstractBox = styled.div<{ show: boolean }>`
-	opacity: ${({ show }) => (show ? 1 : 0)};
-	max-height: ${({ show }) => (show ? "500px" : "0")};
-	padding: ${({ show }) => (show ? "0.5rem" : "0 0.5rem")};
+/*
+	This is the part that fixes the shift. Unlike the previous grid version,
+	the inner box has zero padding while closed, so the closed publication card
+	keeps the same compact spacing as your original.
+*/
+const AbstractShell = styled.div<{ $show: boolean }>`
+	display: grid;
+	grid-template-rows: ${({ $show }) => ($show ? "1fr" : "0fr")};
+	opacity: ${({ $show }) => ($show ? 1 : 0)};
+	overflow: hidden;
+	overflow-anchor: none;
+	transition:
+		grid-template-rows 350ms ease,
+		opacity 250ms ease;
+`;
+
+const AbstractBox = styled.div<{ $show: boolean }>`
+	min-height: 0;
 	overflow: hidden;
 	font-family: "Open Sans", sans-serif;
 	background-color: hsl(var(--primary-700));
 	border-radius: 5px;
 	font-size: 0.90rem;
-	transition:
-		opacity 1s ease,
-		max-height 1s ease,
-		padding 1s ease;
+	line-height: 1.55;
+	box-sizing: border-box;
+	padding: ${({ $show }) => ($show ? "0.5rem" : "0 0.5rem")};
+	transition: padding 350ms ease;
+	overflow-anchor: none;
 `;
-
 
 export default Publication;

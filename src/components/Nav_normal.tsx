@@ -11,8 +11,7 @@ const pathnameOffsets: { [key: string]: number } = {
 	"/"             : 0,
 	"/where"        : 39,
 	"/publications" : 78,
-  	"/posts"        : 117,
-  	"/algorithms"        : 156
+  "/posts"        : 117
 };
 
 const Nav = () => {
@@ -115,9 +114,6 @@ const Nav = () => {
 						</Page>
 						<Page active={pathname.startsWith("/posts") ? 1 : 0} to="/posts">
 							posts
-						</Page>
-						<Page active={pathname === "/algorithms" ? 1 : 0} to="/algorithms">
-							algorithms
 						</Page> 
 					</div>
 
