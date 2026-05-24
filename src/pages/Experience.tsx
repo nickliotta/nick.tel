@@ -16,14 +16,14 @@ const Experience = () => {
             company                 : "Northwell Health",
             department              : "Feinstein Institutes for Medical Research",
             location                : "Manhasset, New York",
-            role                    : "Consultant Bioinformatician",
+            role                    : "Bioinformatician",
             website                 : "https://feinstein.northwell.edu/"
         },
         {
             logo                    : ColdSpringHarborLaboratory,
             timeline                : "January 2022 - Present",
             company                 : "Cold Spring Harbor Laboratory",
-            department              : "Science education",
+            department              : "Dolan Learning Center",
             location                : "Cold Spring Harbor, New York",
             role                    : "Head College Intern",
             website                 : "https://dnalc.cshl.edu/"
@@ -34,7 +34,7 @@ const Experience = () => {
             company                 : "Carnegie Mellon University",
             department              : "Department of Psychology",
             location                : "Pittsburgh, Pennsylvania",
-            role                    : "Undergraduate Research Fellow",
+            role                    : "Undergraduate Research Assistant",
             website                 : "https://www.cmu.edu/"
         },
         {
@@ -52,7 +52,7 @@ const Experience = () => {
             company                 : "University of California, San Francisco",
             department              : "Gladstone Institute",
             location                : "San Francisco, California",
-            role                    : "High School Student Researcher",
+            role                    : "Research Intern",
             website                 : "https://www.ucsf.edu/"
         }
     ];
@@ -73,17 +73,17 @@ const Experience = () => {
     const renderWorkItems = (workList: WorkExperience[]) => {
         return workList.map((work: WorkExperience) => (
             <Work
-                logo                    = {work.logo}
-                timeline                = {work.timeline}
-                company                 = {work.company}
-                department              = {work.department}
-                location                = {work.location}
-                role                    = {work.role}
-                website                 = {work.website}
+                key={`${work.company}-${work.timeline}`}
+                logo={work.logo}
+                timeline={work.timeline}
+                company={work.company}
+                department={work.department}
+                location={work.location}
+                role={work.role}
+                website={work.website}
             />
         ));
     };
-
 
     const renderCurrentWork = () => {
         if (current.length === 0) return <></>;
@@ -125,15 +125,19 @@ const Experience = () => {
 const WorkWrapper = styled.div`
     display: grid;
     width: 100%;
-    gap: 2rem 2rem;
-    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 2rem;
+    grid-template-columns: repeat(auto-fit, minmax(30em, 30em));
+    align-items: stretch;
+    margin-bottom: 2.5rem;
 
-    @media (max-width: 1800px) {
-        grid-template-columns: 1fr 1fr;
+    @media (max-width: 1100px) {
+        grid-template-columns: repeat(auto-fit, minmax(min(100%, 30em), 30em));
     }
 
-    @media (max-width: 900px) {
+    @media (max-width: 768px) {
         grid-template-columns: 1fr;
+        gap: 1rem;
+        margin-bottom: 2rem;
     }
 `;
 

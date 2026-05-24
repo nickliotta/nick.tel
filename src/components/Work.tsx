@@ -1,7 +1,6 @@
 import { animated, useSpring } from "react-spring";
 import styled from "styled-components";
 import { ExternalLinkIcon } from "./Icons";
-import Tooltip, { tooltipClasses, TooltipProps } from "@mui/material/Tooltip";
 
 const calc = (x: number, y: number) => [
 	-(y - window.innerHeight / 2) / 200,
@@ -67,29 +66,6 @@ const Work = ({
 	);
 };
 
-const MentorTooltip = styled(({ className, ...props }: TooltipProps) => (
-	<Tooltip {...props} classes={{ popper: className }} />
-))(({ theme }) => ({
-	[`& .${tooltipClasses.tooltip}`]: {
-		backgroundColor: "#1f1f1f",
-		color: "#fff",
-		minWidth: 150,
-		maxWidth: "none",
-		width: "auto",
-		fontFamily: "inherit",
-		fontSize: "0.95rem",
-		padding: "8px 20px",
-		borderRadius: "8px",
-		whiteSpace: "normal",
-		lineHeight: 1.25,
-		boxShadow: "0px 3px 10px rgba(0,0,0,0.3)",
-		textAlign: "center",
-	},
-	[`& .${tooltipClasses.arrow}`]: {
-		color: "#1f1f1f",
-	},
-}));
-
 const A = styled.a`
     text-decoration: none;
     color: inherit;
@@ -99,111 +75,141 @@ const A = styled.a`
     }
 `;
 
-const Location = styled.a`
-	width: 100%;
-	display: flex;
-	align-items: center;
-	font-weight: 500;
-	height: 19px;
-	font-size: 14px;
-	margin-top: 1px;
-	margin-bottom: 15px;
-	user-select: none;
+const Location = styled.div`
+    width: 100%;
+    display: flex;
+    align-items: center;
+    font-weight: 500;
+    height: 19px;
+    font-size: 14px;
+    margin-top: 1px;
+    margin-bottom: 15px;
+    user-select: none;
+    color: #a7a7a7f3;
+    overflow-wrap: anywhere;
 
-	color: #a7a7a7f3;
-
-	&:hover {
-		text-decoration: none !important;
-	}
-
-	svg:first-child {
-		height: 18px;
-		width: 18px;
-		margin-right: 10px;
-		color: #ff65b2;
-	}
-`;
-
-const Container = styled(animated.div)`
-	width: 30em;
-	border: 1px solid hsl(var(--primary-800));
-	border-radius: 10px;
-	cursor: pointer;
-	transition: all 0.1s ease;
-	height: 100%;
-	will-change: transform;
-
-	&:hover {
-		background-color: hsl(var(--primary-800));
-	}
-
-    @media (max-width: 768px) {
-        width: 25em; // narrower on mobile
+    @media (max-width: 480px) {
+        height: auto;
+        line-height: 1.25;
+        margin-bottom: 0.75rem;
     }
 `;
 
-const Advisor = styled.a`
-	color: inherit;
-	font-weight: 500;
-	text-decoration: none;
-	transition: color 0.2s;
+const Container = styled(animated.div)`
+    width: 30em;
+    height: 10.25rem;
+    border: 1px solid hsl(var(--primary-800));
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.1s ease;
+    will-change: transform;
+    box-sizing: border-box;
 
-	&:hover {
-		color: #fff;
-		text-decoration: none !important;
-	}
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+    overflow: hidden;
+
+    &:hover {
+        background-color: hsl(var(--primary-800));
+    }
+
+    @media (max-width: 768px) {
+        width: 100%;
+        height: auto;
+        min-height: 11rem;
+        transform: none !important;
+    }
 `;
 
 const Header = styled.div`
-	display: flex;
-	flex-direction: row;
-	align-items: center;
-	padding: 1rem;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 1rem 1rem 0.35rem 1rem;
+    min-width: 0;
 
-	img {
-		width: 70px;
-		height: 70px;
-		border-radius: 25%;
-		margin-right: 1rem;
-	}
+    img {
+        width: 70px;
+        height: 70px;
+        border-radius: 25%;
+        margin-right: 1rem;
+        flex: 0 0 auto;
+        object-fit: contain;
+    }
 
-	div {
-		sub {
-			text-transform: uppercase;
-			color: #ff65b2;
-			letter-spacing: 2px;
-		}
+    div {
+        min-width: 0;
+        flex: 1;
 
-		h3 {
-			margin: 0;
-		}
+        sub {
+            display: block;
+            text-transform: uppercase;
+            color: #ff65b2;
+            letter-spacing: 2px;
+            line-height: 1.2;
+            white-space: nowrap;
+        }
 
-		svg {
-			width: 15px;
-			height: 15px;
-			color: #ccc;
-		}
+        h3 {
+            margin: 0;
+            line-height: 1.1;
+            font-size: 1.15rem;
+            overflow-wrap: normal;
+        }
 
-		span {
-			color: #ccc;
-		}
-	}
+        svg {
+            width: 15px;
+            height: 15px;
+            color: #ccc;
+            vertical-align: -0.08em;
+        }
+
+        span {
+            display: block;
+            color: #ccc;
+            line-height: 1.25;
+        }
+    }
+
+    @media (max-width: 480px) {
+        align-items: flex-start;
+        padding: 1rem 1rem 0.5rem 1rem;
+
+        img {
+            width: 58px;
+            height: 58px;
+            margin-right: 0.85rem;
+        }
+
+        div {
+            sub {
+                font-size: 0.68rem;
+                letter-spacing: 0.15em;
+                white-space: normal;
+            }
+
+            h3 {
+                font-size: 1.25rem;
+                overflow-wrap: anywhere;
+            }
+
+            span {
+                font-size: 1rem;
+            }
+        }
+    }
 `;
 
 const Content = styled.div`
-	padding: 1rem;
-	box-sizing: border-box;
+    padding: 0.35rem 1rem 1rem 1rem;
+    box-sizing: border-box;
 
-	h3 {
-		margin: 0.5rem 0;
-		font-size: 1rem;
-	}
-
-	p {
-		margin: 0.25rem 0 0.75rem 0;
-		margin-top: -0.8rem;
-		margin-bottom: 0.75rem;
-	}
+    p {
+        margin: 0;
+        color: hsl(var(--primary-200));
+        line-height: 1.35;
+    }
 `;
 
 export default Work;
